@@ -13,6 +13,8 @@ def low_high():
     # define the {data_1} and {data_2} with random values from data
     data_1 = choice(data)
     data_2 = choice(data)
+    if data_1 == data_2:
+        data_2 = choice(data)
     score = 0
     game_on = True
 
