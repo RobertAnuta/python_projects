@@ -3,52 +3,27 @@ import lxml
 import bs4
 import re
 import pandas as pd
-
-''' Handle all sorts of URL formats and correctly merge them'''
+import openpyxl
+import os
+import time
 from urllib.parse import urljoin
 
 
+def clear_console():
+    os.system('cls')
+
 # Base URL of the site
 base_url = 'https://books.toscrape.com/'
-
-# Single page URL
-url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
-
-result = requests.get(url)
-
-# Scrap single-book data
-soup = bs4.BeautifulSoup(result.content,"lxml")
-
-product_page_url = [url]
-product_upc = [soup.find_all("td")[0].getText()]
-book_title = [soup.find("li", class_="active").getText()]
-price_including_tax = [soup.find_all("td")[3].getText()]
-price_excluding_tax = [soup.find_all("td")[2].getText()]
-quantity_available = [re.search(r"\d+",soup.find_all("td")[5].getText()).group()]
-product_description = [soup.select(".product_page > p")[0].getText()]
-category = [soup.select(".breadcrumb > li")[2].getText().strip()]
-review_rating = [soup.find_all("td")[6].getText()]
-image_url = [urljoin(base_url,soup.select("img")[0]["src"])]
-
-# Define a Dictionary with the data collected
-data = {}
-
-data["product_page_url"] = product_page_url
-data["product_upc"] = product_upc
-data["book_title"] = book_title
-data["price_including_tax"] = price_including_tax
-data["price_excluding_tax"] = price_excluding_tax
-data["quantity_available"] = quantity_available
-data["product_description"] = product_description
-data["category"] = category
-data["review_rating"] = review_rating
-data["image_url"] = image_url
-
+book_base_url = 'https://books.toscrape.com/catalogue/'
 
 all_books_urls = []
 pages_base_url= "https://books.toscrape.com/catalogue/page-{}.html"
-#Loop to every page to collect the Books URLs
+
+#Loop through every page to collect the URLs
 def books_urls():
+    '''
+    Looking through every page of the website and collect the book's URLs to be scrapped     
+    '''
     links = []
     page = 1
     print("Searching...")
@@ -66,8 +41,8 @@ def books_urls():
             
         anchors = soup.select(".image_container > a")
 
-        # Collect all the URLs from one page and build a complete URL
-        hrefs = [urljoin(base_url,anchor['href']) for anchor in anchors]
+        # Collect all the URLs from one page and build a complete UT
+        hrefs = [urljoin(book_base_url,anchor['href']) for anchor in anchors]
 
         links.extend(hrefs)
 
@@ -77,4 +52,61 @@ def books_urls():
 
     return all_books_urls
     
-books_urls()
+
+def generate_excel(all_books_urls):
+    '''The function will loop through every books URLs and will write the details in a dictionary.
+    All the values will be added into an excel sheet split into categories
+    '''    
+    print("Writing data...")
+
+    all_books_data = []
+    
+    for url in all_books_urls:
+        try:
+            time.sleep(1)
+
+            result = requests.get(url)
+            
+            soup = bs4.BeautifulSoup(result.content,"lxml")
+
+            # Define a Dictionary with the data collected
+            book_data = {
+                "product_page_url" : url,
+                "product_upc" : soup.find_all("td")[0].getText(),
+                "book_title" : soup.find("li", class_="active").getText(),
+                "price_including_tax" : soup.find_all("td")[3].getText(),
+                "price_excluding_tax" : soup.find_all("td")[2].getText(),
+                "quantity_available" : re.search(r"\d+",soup.find_all("td")[5].getText()).group(),
+                "product_description" : soup.find_all("meta")[2]["content"].strip(),
+                "category" : soup.select(".breadcrumb > li")[2].getText().strip(),
+                "review_rating" : soup.find_all("td")[6].getText(),
+                "image_url" : urljoin(base_url,soup.select("img")[0]["src"]),
+            }
+            print(book_data)
+    
+            # Append the book data to the list
+            all_books_data.append(book_data)
+            
+        except requests.RequestException as e:
+            print(f"Request error with {url}: {e}")
+        except Exception as e:
+            print(f"Error processing data from {url}: {e}") 
+
+    #Convert dictionary to DataFrame
+    data_frame = pd.DataFrame(all_books_data)
+    
+    # Write the DataFrame to Excel
+    with pd.ExcelWriter("Price Monitoring.xlsx", engine="openpyxl") as writer:
+        for category, group_df in data_frame.groupby('category'):
+            group_df.to_excel(writer, sheet_name=category, index=False)
+
+    clear_console()
+    print("Data has been written to Excel successfully.")   
+
+
+
+if __name__ == "__main__":
+    # Generate URLs
+    books_urls()
+    # Loop through the URLs and collect the excel data
+    generate_excel(all_books_urls)

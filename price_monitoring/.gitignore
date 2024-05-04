@@ -1,3 +1,10 @@
+# Ignore cache
 __pycache__/
 **/__pycache__/
+
+# Ignore the virtual environment
 .venv/
+
+# Ignore Price Monitoring Excel file
+Price Monitoring.xlsx/
+Price Monitoring.xlsx
