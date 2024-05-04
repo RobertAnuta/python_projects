@@ -1,4 +1,7 @@
-# Create a Virtual Environment
+# Open a new terminal and follow the steps bellow
+
+
+ **Create a Virtual Environment**
 
 ## On Windows
 python -m venv venv
@@ -34,3 +37,5 @@ python3 main.py
 if __name__ == "__main__":
     books_urls()
     generate_excel(all_books_urls[0:2])
+
+

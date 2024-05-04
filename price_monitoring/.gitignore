@@ -8,3 +8,7 @@ __pycache__/
 # Ignore Price Monitoring Excel file
 Price Monitoring.xlsx/
 Price Monitoring.xlsx
+
+# Ignore images folder
+images
+images/

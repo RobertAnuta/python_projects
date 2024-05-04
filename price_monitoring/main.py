@@ -26,7 +26,6 @@ def books_urls():
     '''
     links = []
     page = 1
-    print("Searching...")
     
     while True: 
         result = requests.get(pages_base_url.format(page))
@@ -47,6 +46,7 @@ def books_urls():
         links.extend(hrefs)
 
         page += 1
+        print(f"Searching for links.. {len(links)}", end='\r')
 
     all_books_urls.extend(links)
 
@@ -72,20 +72,21 @@ def generate_excel(all_books_urls):
             # Define a Dictionary with the data collected
             book_data = {
                 "product_page_url" : url,
-                "product_upc" : soup.find_all("td")[0].getText(),
+                "product_upc" : soup.select("table td")[0].getText(),
                 "book_title" : soup.find("li", class_="active").getText(),
-                "price_including_tax" : soup.find_all("td")[3].getText(),
-                "price_excluding_tax" : soup.find_all("td")[2].getText(),
+                "price_including_tax" : soup.select("table td")[3].getText(),
+                "price_excluding_tax" : soup.select("table td")[2].getText(),
                 "quantity_available" : re.search(r"\d+",soup.find_all("td")[5].getText()).group(),
                 "product_description" : soup.find_all("meta")[2]["content"].strip(),
                 "category" : soup.select(".breadcrumb > li")[2].getText().strip(),
-                "review_rating" : soup.find_all("td")[6].getText(),
+                "review_rating" : soup.select("table td")[6].getText(),
                 "image_url" : urljoin(base_url,soup.select("img")[0]["src"]),
             }
-            print(book_data)
-    
+
             # Append the book data to the list
             all_books_data.append(book_data)
+
+            print(f"{len(all_books_data)}\{len(all_books_urls)}", end='\r')
             
         except requests.RequestException as e:
             print(f"Request error with {url}: {e}")
@@ -103,10 +104,27 @@ def generate_excel(all_books_urls):
     clear_console()
     print("Data has been written to Excel successfully.")   
 
+    
+    # Define the path for the directory and check if the folder exists
+    folder_path = os.getcwd() + "\images"
+
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    print("Saving images...")
+
+    for book in all_books_data:
+        image_link = requests.get(book["image_url"])
+        f = open(f'.\images\{soup.select("table td")[0].getText()}', "wb")
+        f.write(image_link.content)
+        f.close()
+    
+    clear_console()
+    print("Books images successfully saved!")
 
 
 if __name__ == "__main__":
     # Generate URLs
     books_urls()
     # Loop through the URLs and collect the excel data
-    generate_excel(all_books_urls)
+    generate_excel(all_books_urls[0:2])
