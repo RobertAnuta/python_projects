@@ -127,4 +127,4 @@ if __name__ == "__main__":
     # Generate URLs
     books_urls()
     # Loop through the URLs and collect the excel data
-    generate_excel(all_books_urls[0:2])
+    generate_excel(all_books_urls)

@@ -1,41 +1,79 @@
-# Open a new terminal and follow the steps bellow
+# Books to Scrape Web Scraper
 
+This script is designed to scrape book information from [Books to Scrape](https://books.toscrape.com/). It collects details about each book, organizes them by category into different sheets in an Excel file, and downloads images of the books.
 
- **Create a Virtual Environment**
+## Features
 
-## On Windows
-python -m venv venv
+- Retrieves book details including title, price, stock status, and product description.
+- Categorizes books into their respective categories in the Excel file.
+- Downloads and saves book images in a local directory.
 
-## On macOS/Linux
-python3 -m venv venv
+## Prerequisites
 
+- Python 3.6+
+- pip
+- Virtual environment (recommended)
 
-# Activate the Virtual Environment
+## Installation
 
-## On Windows
-.\venv\Scripts\activate
+1. **Clone the repository**
 
-## On macOS/Linux
-source venv/bin/activate
+   ```bash
+   git clone https://github.com/RobertAnuta/python_projects/tree/2fe7768f817da5e4f56c29864a49a1f44969eac4/price_monitoring
+   cd price_monitoring
+   ```
 
+2. **Create a Virtual Environment**
 
-# Install Required Packages
-pip install -r requirements.txt
+    - On Windows
+    ```bash
+    python -m venv venv
+    ```
 
+    - On macOS/Linux
+    ```bash
+    python3 -m venv venv
+    ```
 
-# Run the Script while the virtual environment is activated:
+3. **Activate the Virtual Environment**
+    
+    - On Windows
+    ```bash
+    .\venv\Scripts\activate
+    ```
 
-## On Windows
-python main.py
+    - On macOS/Linux
+    ```bash
+    source venv/bin/activate
+    ```
 
-## On macOS/Linux
-python3 main.py
+4. **Install Required Packages**
+   
+     ```bash
+    pip install -r requirements.txt
+    ```
 
-<!-- FOR TEST -->
-# Replace the following code from the end of the main.py file:
+## Usage
 
-if __name__ == "__main__":
-    books_urls()
-    generate_excel(all_books_urls[0:2])
+Run the script from the command line.
 
+   - On Windows
+    ```bash
+    python main.py
+    ```
 
+    - On macOS/Linux
+    ```bash
+    python3 main.py
+    ```
+
+## Modifying the Script
+
+To customize the range of books processed or change settings:
+
+- Edit the main.py script's following section before running:
+    ```python
+    if __name__ == "__main__":
+        books_urls()
+        generate_excel(all_books_urls[0:2])  # Modify the slice as needed
+    ```
