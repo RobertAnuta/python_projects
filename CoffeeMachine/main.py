@@ -87,6 +87,9 @@ def main():
             print(f'Milk: {resources["milk"]}')
             print(f'Coffee: {resources["coffee"]}')
             print(f'Money: {money["total"]}')
+        elif user_input == "off":
+            print("Turning off the machine!")
+            break
         else:
             print("Invalid choice! Please choose again!")
 
