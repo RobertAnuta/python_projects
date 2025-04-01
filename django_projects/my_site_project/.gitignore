@@ -1,0 +1,26 @@
+# Django specific
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+
+# Environment
+.venv/
+.env
+
+# VS Code and PyCharm
+.vscode/
+.idea/
+
+# Static files
+staticfiles/
+media/
+
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+*$py.class
+
+# System files
+.DS_Store
+Thumbs.db
