@@ -10,13 +10,21 @@
         {% block page_title %}My Blog{% endblock %}
     </title>
     {% comment %} Load global stylesheet {% endcomment %}
-    <link rel="stylesheet" href="{% static "app.css" %}">
+    <link rel="stylesheet" href="{% static "base.css" %}">
     
     {% comment %} local stylesheet {% endcomment %}
     {% block css_files %}{% endblock %}
 
 </head>
+
 <body>  
+    <section id="main-navigation">
+        <ul>
+            <li class="nav_title"><a href="{% url 'index' %}">ROBERT'S BLOG</a></li>
+            <li><a href="{% url 'posts-page' %}">All Posts</a></li>
+        </ul>
+    </section>
+    
     {% block content %}{% endblock  %} 
 </body>
 </html>

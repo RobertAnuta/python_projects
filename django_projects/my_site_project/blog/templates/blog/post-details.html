@@ -13,7 +13,7 @@
     <section id="summary">
         <h2>{{ post.title }}</h2>
         <article>
-            <img src="/media/post_images/{{ post.image }}" alt="{{ post.title }}">
+            <img src="/media/{{ post.image }}" alt="{{ post.title }}">
             <address>By {{ post.author }}</address>
             <div>
                 Last updated on <time>{{ post.date|date:"d M Y"}}</time>
